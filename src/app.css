@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Fabrica Regular";
+
+    src: url("./font/Fabrica.eot");
+
+    src:
+        url("./font/Fabrica.eot?#iefix") format("embedded-opentype"),
+        url("./font/Fabrica.woff2") format("woff2"),
+        url("./font/Fabrica.woff") format("woff"),
+        url("./font/Fabrica.ttf") format("truetype"),
+        url("./font/Fabrica.svg#FabricaRegular") format("svg");
+
+    font-weight: normal;
+
+    font-style: normal;
+
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'WebFont';
+    src: url('./font/Webfont.eot');
+    src: url('./font/Webfont.eot?#iefix') format('embedded-opentype'),
+        url('./font/Webfont.woff2') format('woff2'),
+        url('./font/Webfont.woff') format('woff'),
+        url('./font/Webfont.ttf') format('truetype'),
+        url('./font/Webfont.svg#Webfont') format('svg');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+.bg-text {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    white-space: pre-line;
+    font-weight: bold;
+    font-size: 66px;
+    line-height: 62px;
+    letter-spacing: 1.5px;
+    font-family: "Fabrica Regular";
+    position: relative;
+    font-kerning: auto;
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+}
+
+#c {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    z-index: 30;
+}
+
+.container-class {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+}
+
+#dot-center {
+    position: absolute;
+    z-index: 100;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 100px;
+}
+
+.timing {
+    transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+    transition-property: clip-path, margin, transform;
+}
+
+.clip-path {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.clip-path-end {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+}
+
+.startScroll-clip-path {
+    clip-path: polygon(0% -66px, 900px -66px, 900px 0px, 0% 0px);
+    transition-property: clip-path, transform;
+    transition-duration: 700ms;
+}
+
+.wrapper-transition {
+    transition-property: clip-path, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 900ms;
+}
+
+.titleScroll-clip-path {
+    clip-path: polygon(0% 66px, 100% 66px, 100% 0px, 0% 0px);
+    transition-property: clip-path, transform;
+    transition-duration: 900ms;
+}
