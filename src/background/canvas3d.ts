@@ -1,21 +1,21 @@
 import * as THREE from 'three';
 import { easeOutSine } from 'js-easing-functions';
-import Grid from './lib/grid';
-import { navigate } from '../svelte-routing/src/index';
-import { mask } from './stores';
-import navigateEffect from './navigate';
+import Grid from '../lib/grid';
+import navigateEffect from '../navigate';
 
 export default async function canvas3d(canvas: HTMLElement) {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, canvas, alpha: true });
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(window.devicePixelRatio);
+    
     let moveShift: { x: number, y: number } = { x: 0, y: 0 }
     let throwStartPoint: { x: number, y: number } | null = null
     let startPoint: { x: number, y: number } = { x: 0, y: 0 }
     let startPos: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
     let allowMove = false;
     let renderCancel: boolean = false;
+    let currentLink: string;
 
     let AR = canvas.clientWidth / canvas.clientHeight
 
@@ -167,18 +167,19 @@ export default async function canvas3d(canvas: HTMLElement) {
     }, 100)
 
     function canvasMouseDown(e: MouseEvent){
-        if(!grid.intro){
-            let { x: mx, y: my } = convertCoords(e.pageX, e.pageY);
-            moveShift.x = mx - grid.planes.position.x;
-            moveShift.y = my - grid.planes.position.y;
-            if(hovered.length){
-                navigateEffect(hovered[0].userData.link)
-            }
-            allowMove = true;
-            canvas.style.cursor = "grabbing"
-            startPoint = { x: e.pageX, y: e.pageY };
-            startPos = grid.planes.position.clone();
+        if(grid.intro){
+            return
         }
+        let { x: mx, y: my } = convertCoords(e.pageX, e.pageY);
+        moveShift.x = mx - grid.planes.position.x;
+        moveShift.y = my - grid.planes.position.y;
+        if(hovered.length){
+            currentLink = (hovered[0].userData.link)
+        }
+        allowMove = true;
+        canvas.style.cursor = "grabbing"
+        startPoint = { x: e.pageX, y: e.pageY };
+        startPos = grid.planes.position.clone();
     }
 
     function documentMouseMoveOne(e: MouseEvent){
@@ -230,19 +231,26 @@ export default async function canvas3d(canvas: HTMLElement) {
     }
 
     function windowMouseUp(e: MouseEvent){
-        if(!grid.intro){
-            allowMove = false;
-            canvas.style.cursor = "grab"
-            apprZTarget = 0;
-            uOffsetTarget = 0;
-            throwStartPoint = { x: e.pageX, y: e.pageY };
-            let throwSpeedCap = 70
-            throwCount = Math.max(0, Math.min(1, (Math.sqrt(speedX * speedX + speedY * speedY) / 140) - 0 / 1 - 0))
-            throwSpeedX = Math.abs(speedX) < throwSpeedCap ? speedX : throwSpeedCap * Math.sign(speedX);
-            throwSpeedY = Math.abs(speedY) < throwSpeedCap ? speedY : throwSpeedCap * Math.sign(speedY);
-            throwSpeed = Math.sqrt(throwSpeedX * throwSpeedX + throwSpeedY * throwSpeedY)
-            // grid.uniforms.uOffset.value.x = throwSpeed > 45 ? throwSpeed < 65 ? throwSpeed / 65 : 1.0 : grid.uniforms.uOffset.value.x;
+        if(grid.intro){
+            return
         }
+        if(currentLink && 
+            e.pageX == startPoint.x && e.pageY == startPoint.y){
+            navigateEffect(currentLink)
+        }else{
+            currentLink = ""
+        }
+        allowMove = false;
+        canvas.style.cursor = "grab"
+        apprZTarget = 0;
+        uOffsetTarget = 0;
+        throwStartPoint = { x: e.pageX, y: e.pageY };
+        let throwSpeedCap = 70
+        throwCount = Math.max(0, Math.min(1, (Math.sqrt(speedX * speedX + speedY * speedY) / 140) - 0 / 1 - 0))
+        throwSpeedX = Math.abs(speedX) < throwSpeedCap ? speedX : throwSpeedCap * Math.sign(speedX);
+        throwSpeedY = Math.abs(speedY) < throwSpeedCap ? speedY : throwSpeedCap * Math.sign(speedY);
+        throwSpeed = Math.sqrt(throwSpeedX * throwSpeedX + throwSpeedY * throwSpeedY)
+        // grid.uniforms.uOffset.value.x = throwSpeed > 45 ? throwSpeed < 65 ? throwSpeed / 65 : 1.0 : grid.uniforms.uOffset.value.x;
     }
 
     function windowMouseMove(e: MouseEvent){

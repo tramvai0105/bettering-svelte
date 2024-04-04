@@ -1,12 +1,12 @@
 <script lang="ts">
-    import Canvas from "./Canvas.svelte";
-    import Background from "./Background.svelte";
-    import { Router, Route } from "../svelte-routing/src/index";
+    import Canvas from "./background/Canvas.svelte";
+    import Background from "./background/Background.svelte";
+    import { Router, Route } from "svelte-routing";
     import "./app.css";
     import { timeWrap } from "./lib/intro";
     import { onMount } from "svelte";
     import Menu from "./menu/Menu.svelte";
-    import Test from "./Test.svelte";
+    import Pig from "./Pig.svelte";
     import Mask from "./Mask.svelte";
     import { mask } from "./stores";
     import Pigs from "./Pigs.svelte";
@@ -59,19 +59,19 @@
     });
 
     let showMenu: boolean = true;
-    export let url = "";
 </script>
 
 <div class="container-class relative overflow-hidden">
-    <Router delayFn={()=>mask.set(1)} duration={900} {url}>
+    <Router let:location delayFn={()=>mask.set(1)} duration={900}>
         <Mask />
-        <Menu {showMenu} />
+        <Menu location={location} {showMenu} />
         <Route path="*">
             <Canvas bind:showMenu {progress} />
             <Background {progress} />
         </Route>
-        <Route path="/foo">
-            <Test />
+        <Route let:params path="/pigs/:id">
+            <!-- svelte-ignore missing-declaration -->
+            <Pig id={params.id}/>
         </Route>
         <Route path="/pigs">
             <Pigs />

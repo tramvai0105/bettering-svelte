@@ -1,4 +1,4 @@
-import { navigate } from '../svelte-routing/src/index';
+import { navigate } from 'svelte-routing';
 import { mask } from './stores';
 
 export default function navigateEffect(link: string){

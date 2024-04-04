@@ -6,6 +6,7 @@
     export let showMenu: boolean;
     let show = false;
     let value = 0;
+    export let location: any;
 
     mask.subscribe((m) => value = m);
 
@@ -21,6 +22,6 @@
 {#if (showMenu)}
 <div class="relative">
     <MenuToolbar bind:show/>
-    <MenuStage show={show}/>
+    <MenuStage location={location} bind:show/>
 </div>
 {/if}

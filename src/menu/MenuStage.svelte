@@ -3,6 +3,7 @@
     import acorn from "./acorn.svg"
 
     export let show: boolean;
+    export let location: any;
 </script>
 
 {#if show}
@@ -13,9 +14,9 @@
             <span>PIGSLEY</span>
         </a>
         <div class="flex pages items-center m-auto flex-col">
-            <a href="/pigs" on:click={(e)=>{e.preventDefault();navigateEffect("pigs")}} class="page-animation page-effect cursor-pointer">Our Pigs</a>
-            <a href="/pigs" on:click={(e)=>{e.preventDefault();navigateEffect("pigs")}} class="page-animation page-effect cursor-pointer">The Grand King</a>
-            <a href="/pigs" on:click={(e)=>{e.preventDefault();navigateEffect("pigs")}} class="page-animation page-effect cursor-pointer">Blog</a>
+            <a href="/pigs" on:click={(e)=>{e.preventDefault();(location.pathname == "/pigs") ? show = !show : navigateEffect("../pigs")}} class="page-animation page-effect cursor-pointer {location.pathname == "/pigs" ? "underline" : ""}">Our Pigs</a>
+            <a href="/pigs" on:click={(e)=>{e.preventDefault();navigateEffect("../pigs")}} class="page-animation page-effect cursor-pointer">The Grand King</a>
+            <a href="/pigs" on:click={(e)=>{e.preventDefault();navigateEffect("../pigsx")}} class="page-animation page-effect cursor-pointer">Blog</a>
         </div>
         <div class="mt-auto flex flex-row bottom">
             <div class="flex ml-[50%] gap-6 -translate-x-[50%] flex-row">

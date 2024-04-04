@@ -1,9 +1,11 @@
 {
   "name": "bettering-svelte",
+  "homepage": "https://tramvai0105.io/bettering-svelte",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -24,8 +26,10 @@
   "dependencies": {
     "@types/three": "^0.162.0",
     "file-system": "^2.2.2",
+    "gh-pages": "^6.1.1",
     "js-easing-functions": "^1.0.3",
     "path": "^0.12.7",
+    "svelte-routing": "github:tramvai0105/svelte-routing",
     "three": "^0.162.0"
   }
 }

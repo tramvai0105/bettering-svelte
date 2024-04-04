@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { easeOutSine } from 'js-easing-functions';
+import {colorLinks} from "../background/links";
 
 interface Diagonal {
     id: number,
@@ -29,18 +30,19 @@ export default class Grid {
 
     grid: Diagonal[] = [];
     planes = new THREE.Object3D();
-    colors: string[] = [
-        "235, 92, 104", // soft pink
-        "249, 217, 78", // yellow
-        "31, 162, 255", // blue
-        "3, 181, 170", // green copper
-        "235, 130, 88", // dust orange
-        "102, 31, 255", // blue violet
-        "237, 33, 124", // magenta
-        "97, 232, 225", // sea blue
-        "155, 163, 98", // green
-        "255, 202, 109", // dust yellow
-    ];
+    // colors: string[] = [
+    //     "235, 92, 104", // soft pink
+    //     "249, 217, 78", // yellow
+    //     "31, 162, 255", // blue
+    //     "3, 181, 170", // green copper
+    //     "235, 130, 88", // dust orange
+    //     "102, 31, 255", // blue violet
+    //     "237, 33, 124", // magenta
+    //     "97, 232, 225", // sea blue
+    //     "155, 163, 98", // green
+    //     "255, 202, 109", // dust yellow
+    // ];
+    colors : string[] = colorLinks.map(color => color.color);
     positions: THREE.Vector3[][] = [];
     shuffledColors: string[] = [];
     range = { first: 0, last: 0 };
@@ -76,8 +78,6 @@ export default class Grid {
         })
         this.copyStartPositions()
         this.grid = this.grid.map(d=>{return {...d, elements: d.elements.map(el=>{
-            let singX = el.position.x?el.position.x<0?-1:1:1
-            let singY = el.position.y?el.position.y<0?-1:1:1
             let shiftX = el.position.distanceTo(new THREE.Vector3(0, 0, 0)) < 1.4 ? 0.9 : 0
             let shiftY = el.position.distanceTo(new THREE.Vector3(0, 0, 0)) < 1.4 ? 1.3 : 0
             el.position.set((el.position.x + shiftX) * 1.9,
@@ -248,9 +248,10 @@ export default class Grid {
             }
         }
         let color = this.shuffledColors.pop() as string;
-        color = color.split(", ").map(c => Number(c) / 255).join(",")
+        let link = colorLinks.find(l=> l.color == color)?.link || "default";
+        let uColor = {value: new THREE.Vector3(...color.split(", ").map(c => Number(c) / 255))};
         let material = new THREE.ShaderMaterial({
-            uniforms: this.uniforms,
+            uniforms: {...this.uniforms, uColor},
             vertexShader: `
                 uniform vec2 uOffset;
                 varying vec2 vUv;
@@ -271,8 +272,9 @@ export default class Grid {
                 `,
             fragmentShader: `
                 precision mediump float;
+                uniform vec3 uColor;
         
-                #define color vec4(${color}, 1.0)
+                #define color vec4(uColor, 1.0)
             
                 void main() {
                     // gl_FragColor = vec4(gl_FragCoord.zxy / 400.0, 1.0);
@@ -285,7 +287,8 @@ export default class Grid {
         let shiftX = getRandomFloat(-shift, shift, 1)
         let shiftY = getRandomFloat(-shift * 4, shift * 4, 1)
         const mesh = new THREE.Mesh(geometry, material)
-        mesh.userData = {link: "foo"}
+        link = `/pigs/${link}`
+        mesh.userData = {link: link}
         return {mesh, shiftX, shiftY}
     }
 
