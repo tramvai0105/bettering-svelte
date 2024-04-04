@@ -8,9 +8,6 @@ export default async function canvas3d(canvas: HTMLElement) {
     const renderer = new THREE.WebGLRenderer({ antialias: true, canvas, alpha: true });
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(window.devicePixelRatio);
-    
-    let moveShift: { x: number, y: number } = { x: 0, y: 0 }
-    let throwStartPoint: { x: number, y: number } | null = null
     let startPoint: { x: number, y: number } = { x: 0, y: 0 }
     let startPos: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
     let allowMove = false;
@@ -75,7 +72,7 @@ export default async function canvas3d(canvas: HTMLElement) {
         reverse?: boolean;
         startTime?: number; 
         element: THREE.Object3D<THREE.Object3DEventMap>
-    }) {
+    }) { 
         if (!this.startTime) {
             this.startTime = Date.now();
         }
@@ -126,7 +123,7 @@ export default async function canvas3d(canvas: HTMLElement) {
             uOffsetTarget = 0;
         }
 
-        if (renderCap == 2) {
+        if (renderCap == 1) {
             let z = grid.planes.position.z
             if (Math.abs((apprZTarget - z) / 7) > 0.00001) {
                 grid.planes.position.z += (apprZTarget - z) / 7
@@ -170,9 +167,6 @@ export default async function canvas3d(canvas: HTMLElement) {
         if(grid.intro){
             return
         }
-        let { x: mx, y: my } = convertCoords(e.pageX, e.pageY);
-        moveShift.x = mx - grid.planes.position.x;
-        moveShift.y = my - grid.planes.position.y;
         if(hovered.length){
             currentLink = (hovered[0].userData.link)
         }
@@ -209,7 +203,6 @@ export default async function canvas3d(canvas: HTMLElement) {
             })
 
             let distance = Math.sqrt(dx * dx + dy * dy);
-            let direction = Math.atan2(dy, dx);
 
             speed = distance / dt * 100;
             speedX = Math.round(dx / dt * 100);
@@ -244,13 +237,11 @@ export default async function canvas3d(canvas: HTMLElement) {
         canvas.style.cursor = "grab"
         apprZTarget = 0;
         uOffsetTarget = 0;
-        throwStartPoint = { x: e.pageX, y: e.pageY };
         let throwSpeedCap = 70
         throwCount = Math.max(0, Math.min(1, (Math.sqrt(speedX * speedX + speedY * speedY) / 140) - 0 / 1 - 0))
         throwSpeedX = Math.abs(speedX) < throwSpeedCap ? speedX : throwSpeedCap * Math.sign(speedX);
         throwSpeedY = Math.abs(speedY) < throwSpeedCap ? speedY : throwSpeedCap * Math.sign(speedY);
         throwSpeed = Math.sqrt(throwSpeedX * throwSpeedX + throwSpeedY * throwSpeedY)
-        // grid.uniforms.uOffset.value.x = throwSpeed > 45 ? throwSpeed < 65 ? throwSpeed / 65 : 1.0 : grid.uniforms.uOffset.value.x;
     }
 
     function windowMouseMove(e: MouseEvent){
